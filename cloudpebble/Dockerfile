@@ -1,4 +1,4 @@
-FROM python:2.7.11
+FROM python:2.7-stretch
 MAINTAINER Katharine Berry <katharine@pebble.com>
 
 ENV NPM_CONFIG_LOGLEVEL=info NODE_VERSION=10.15.3 DJANGO_VERSION=1.6 NODEJS_CHECK_SIGNATURES=no
@@ -21,7 +21,7 @@ RUN npm install -g npm jshint
 # Django stuff
 
 # Fix broken sources.list (jessie repositories have been archived)
-RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://archive.debian.org/debian/ jessie main\ndeb http://security.debian.org jessie/updates main\ndeb-src http://security.debian.org jessie/updates main" > /etc/apt/sources.list
+#RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://archive.debian.org/debian/ jessie main\ndeb http://security.debian.org jessie/updates main\ndeb-src http://security.debian.org jessie/updates main" > /etc/apt/sources.list
 
 RUN apt-get update && apt-get install -y \
     gettext \

@@ -34,7 +34,7 @@ if TRAVIS:
             'ENGINE':   'django.db.backends.postgresql_psycopg2',
             'NAME':     'travisci',
             'USER':     'postgres',
-            'PASSWORD': '',
+            'PASSWORD': 'postgres',
             'HOST':     'localhost',
             'PORT':     '',
         }
@@ -46,6 +46,7 @@ elif 'DATABASE_URL' not in _environ:
             'NAME': 'postgres',
             'USER': 'postgres',
             'HOST': 'postgres',
+            'PASSWORD': 'postgres',
             'PORT': 5432,
         }
     }
@@ -129,7 +130,7 @@ STATIC_ROOT = 'staticfiles'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
+STATIC_URL = '/cloudpebble/static/'
 
 PUBLIC_URL = _environ.get('PUBLIC_URL', 'http://localhost:8000/') # This default is completely useless.
 

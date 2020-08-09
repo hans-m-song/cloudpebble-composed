@@ -1,7 +1,8 @@
 web:
+  container_name: cloudpebble-web
   build: cloudpebble/
   ports:
-    - "80:80"
+    - "9004:80"
   volumes:
     - "./cloudpebble/:/code"
   links:
@@ -17,14 +18,19 @@ web:
     - PORT=80
     # On MAC - go to your settings -> Network -> copy IP address
     # NOTE: you can NOT use 127.0.0.1 or 0.0.0.0 because it will be the machine's IP address, not your PC's address
-    - AWS_S3_FAKE_S3=192.168.76.5:8003
-    - MEDIA_URL=http://192.168.76.5:8003/builds.cloudpebble.net/
-    - QEMU_URLS=http://192.168.76.5:8001/
-    - YCM_URLS=http://192.168.76.5:8002/
-    - PUBLIC_URL=http://192.168.76.5/
+    - AWS_S3_FAKE_S3=192.168.1.42:8003
+    - MEDIA_URL=http://192.168.1.42:8003/builds.cloudpebble.net/
+    - QEMU_URLS=http://192.168.1.42:8001/
+    - YCM_URLS=http://192.168.1.42:8002/
+    - PUBLIC_URL=http://192.168.1.42/
     - LIBPEBBLE_PROXY=wss://cloudpebble-ws.herokuapp.com/tool
     - PEBBLE_AUTH_URL=https://auth.rebble.io
+#- DATABASE_URL=postgres://postgres:postgres@192.168.1.42:5432/postgres
+  extra_hosts:
+    - postgres:192.168.1.42
+
 celery:
+  container_name: cloudpebble-celery
   build: cloudpebble/
   volumes:
     - "./cloudpebble/:/code"
@@ -36,25 +42,39 @@ celery:
     - DEBUG="yes"
     - RUN_CELERY="yes"
     - AWS_ENABLED=yes
-    - EXPORT_ROOT=http://192.168.76.5/export.cloudpebble.net/
-    - AWS_S3_FAKE_S3=192.168.76.5:8003
+    - EXPORT_ROOT=http://192.168.1.42/export.cloudpebble.net/
+    - AWS_S3_FAKE_S3=192.168.1.42:8003
+
 qemu:
+  container_name: cloudpebble-qemu
   build: cloudpebble-qemu-controller/
   volumes:
     - "./cloudpebble-qemu-controller/:/code"
   ports:
     - "8001:80"
+
 ycmd:
+  container_name: cloudpebble-ymcd
   build: cloudpebble-ycmd-proxy/
   volumes:
     - "./cloudpebble-ycmd-proxy/:/code"
   ports:
     - "8002:80"
+
 redis:
+  container_name: cloudpebble-redis
   image: redis
+
 postgres:
+  container_name: cloudpebble-postgres
   image: postgres
+  ports:
+    - "5432:5432"
+  environment:
+    - POSTGRES_HOST_AUTH_METHOD=trust
+
 s3:
+  container_name: cloudpebble-s3
   image: kuracloud/fake-s3
   ports:
     - "8003:4569"
